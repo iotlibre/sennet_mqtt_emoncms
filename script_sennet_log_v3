@@ -30,6 +30,10 @@ tx_key = parser.get('emoncms','key')
 mqtt_topic = parser.get('listener','topic')
 listener_name = parser.get('listener','name')
 mqtt_ip = parser.get('listener','mqtt_ip')
+mqtt_login = parser.get('listener','mqtt_login')
+mqtt_password = parser.get('listener','mqtt_password')
+
+
 
 # devuelve una list con todas las secciones
 sections = parser.sections()
@@ -98,7 +102,7 @@ client.on_message = on_message
 client.on_diconnect = on_disconnect
 
 
-client.username_pw_set("emonpi","emonpimqtt2016")
+client.username_pw_set(mqtt_login,mqtt_password)
 client.connect(mqtt_ip, 1883, 60)
 client.loop_forever(timeout=1.0, max_packets=1, retry_first_connection=False)
 
