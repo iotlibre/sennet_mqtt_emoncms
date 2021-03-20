@@ -34,6 +34,8 @@ mqtt_login = parser.get('listener','mqtt_login')
 mqtt_password = parser.get('listener','mqtt_password')
 
 
+energy = 0.0
+
 
 # devuelve una list con todas las secciones
 sections = parser.sections()
@@ -73,19 +75,28 @@ def on_message(client, userdata, msg):
         name_2=     str(decoded["devs"][0]["reg"][2]["N"])
         value_2 =   str(decoded["devs"][0]["reg"][2]["V"])
         time_1 =    str(decoded["devs"][0]["ts"])
+        
     
     except:
         logging.info("error in decoded)")
         decoded_ok = 0
     
     if decoded_ok == 1:
+        global energy 
+        energy += decoded["devs"][0]["reg"][0]["V"]
+        name_3 = "energy"
+        value_3 = str(energy)
+        
         logging.info(name_1)   
         logging.info(value_1)
         logging.info(name_2)   
         logging.info(value_2) 
+        logging.info(name_3)
+        logging.info(value_3)
         logging.info(time_1)
-        url_long= 'http://{0}/emoncms/input/post?node={1}&fulljson={{"{2}":{3},"{4}":{5},"time":"{6}"}}&apikey={7}'
-        url_long=url_long.format(tx_cms_ip, node_1, name_1, value_1, name_2, value_2, time_1, tx_key)
+        
+        url_long= 'http://{0}/emoncms/input/post?node={1}&fulljson={{"{2}":{3},"{4}":{5},"{6}":{7},"time":"{8}"}}&apikey={9}'
+        url_long=url_long.format(tx_cms_ip, node_1, name_1, value_1, name_2, value_2, name_3, value_3, time_1, tx_key)
     else:
         url_long= 'http://{0}/emoncms/input/post?node={1}&fulljson={{"{2}":{3}}}&apikey={4}'
         url_long=url_long.format(tx_cms_ip, listener_name, "error", "1", tx_key)
