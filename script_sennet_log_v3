@@ -11,6 +11,10 @@ from logging.handlers import RotatingFileHandler
 
 import json
 
+from datetime import date
+from datetime import datetime
+from datetime import timedelta
+
 
 # Para obtener mas detalle: level=logging.DEBUG
 # Para comprobar el funcionamiento: level=logging.INFO
@@ -75,8 +79,13 @@ def on_message(client, userdata, msg):
         name_2=     str(decoded["devs"][0]["reg"][2]["N"])
         value_2 =   str(decoded["devs"][0]["reg"][2]["V"])
         time_1 =    str(decoded["devs"][0]["ts"])
-        
-    
+		if ("T23:59:00" in time_1):
+			# convierto time_1 a fecha
+			time_1b = datetime.fromisoformat(time_1)+ timedelta(minutes=3)
+			# convierto time_1 a string con formato 2021-05-01T00:02:00
+			time_1  = time_1b.isoformat(timespec='seconds') 
+
+
     except:
         logging.info("error in decoded)")
         decoded_ok = 0
